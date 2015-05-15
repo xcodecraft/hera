@@ -9,12 +9,16 @@ type HelloREST struct {
 }
 
 //curl 'localhost:8083/Hello/Get?fd=123'
-func (this *HelloREST) Get(c *hera.Context) {
+func (this *HelloREST) Get(c *hera.Context) error {
 	params := c.Params
 	for p_key, p_value := range params {
-		c.Json("param key:" + p_key + " value: " + p_value)
+		if "1" == p_value {
+			return c.Success("access-func")
+		} else {
+			return c.Error("param key:"+p_key+" value: "+p_value+"access-error", 1001, 400)
+		}
 	}
-	c.Json("   access ok")
+	return c.Success("access-func")
 }
 
 //curl 'localhost:8083/Hello/Set?fd=123'

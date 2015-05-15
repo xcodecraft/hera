@@ -4,13 +4,13 @@ import (
 	_ "example"
 	"fmt"
 	"hera"
+	"runtime"
 )
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	fmt.Printf("hera starting...\n")
-	r := hera.NewRouter()
-
+	n := hera.Classic()
 	hera.Logger.Init("hera", hera.LevelDebug)
-	hera.Logger.Info("hera start 8083...")
-	r.Start(":8083")
+	n.Run(8083)
 }

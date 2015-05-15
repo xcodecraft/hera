@@ -1,7 +1,10 @@
 package hera
 
 import (
+	"fmt"
 	"log/syslog"
+	"net/http"
+	"time"
 	//"strconv"
 )
 
@@ -19,6 +22,10 @@ type XLogger struct {
 	logName   string
 	logLevel  int
 	logWriter *syslog.Writer
+}
+
+func NewLogger() *XLogger {
+	return Logger
 }
 
 func (this *XLogger) Init(logName string, logLevel int) {
@@ -60,4 +67,14 @@ func (this *XLogger) Error(str string) {
 	if this.logLevel <= LevelError {
 		this.Logger().Info(" [error] " + str)
 	}
+}
+
+func (this *XLogger) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	start := time.Now()
+	this.Info(fmt.Sprintf("Started %s %s", r.Method, r.URL.Path))
+
+	next(rw, r)
+
+	res := rw.(ResponseWriter)
+	this.Info(fmt.Sprintf("Completed %v %s in %v", res.Status(), http.StatusText(res.Status()), time.Since(start)))
 }
