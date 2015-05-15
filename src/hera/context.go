@@ -50,7 +50,7 @@ func (rv *ReturnValue) Json() []byte {
 }
 
 func (c *Context) Success(data interface{}) error {
-	rv := NewReturnValue(0, " ", nil)
+	rv := NewReturnValue(0, " ", data)
 	c.SetHeader("ContentType", "application/json")
 	c.Res.WriteHeader(int(STATUS_OK))
 	c.Res.Write(rv.Json())

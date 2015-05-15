@@ -11,14 +11,15 @@ type HelloREST struct {
 //curl 'localhost:8083/Hello/Get?fd=123'
 func (this *HelloREST) Get(c *hera.Context) error {
 	params := c.Params
+	var data string = ""
 	for p_key, p_value := range params {
 		if "1" == p_value {
-			return c.Success("access-func")
+			return c.Error("key has error", 1001, 400)
 		} else {
-			return c.Error("param key:"+p_key+" value: "+p_value+"access-error", 1001, 400)
+			data += "key[" + p_key + "]=" + p_value + " "
 		}
 	}
-	return c.Success("access-func")
+	return c.Success("access-data:" + data)
 }
 
 //curl 'localhost:8083/Hello/Set?fd=123'
