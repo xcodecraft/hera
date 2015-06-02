@@ -12,5 +12,5 @@ func main() {
 	fmt.Printf("hera starting...\n")
 	n := hera.Classic()
 	hera.Logger.Init("hera", hera.LevelDebug)
-	n.Run(8083)
+	n.Run(":8083")
 }

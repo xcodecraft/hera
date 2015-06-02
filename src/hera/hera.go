@@ -67,10 +67,10 @@ func (n *hera) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.R
 	n.UseHandler(http.HandlerFunc(handlerFunc))
 }
 
-func (n *hera) Run(port int) {
+func (n *hera) Run(addr string) {
 	n.UseHandler(NewRouter())
-	Logger.Info(fmt.Sprintf("listening on %d", port))
-	ListenAndServe(port, n)
+	Logger.Info(fmt.Sprintf("listening on %v", addr))
+	http.ListenAndServe(addr, n)
 }
 
 func (n *hera) Handlers() []Handler {
