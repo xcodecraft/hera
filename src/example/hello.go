@@ -16,7 +16,7 @@ func (this *HelloREST) Get(c *hera.Context) error {
 		if "1" == p_value {
 			return c.Error("key has error", 1001, 400)
 		} else {
-			data += "key[" + p_key + "]=" + p_value + " "
+			data += "key[" + p_key + "]=" + p_value + " " + hera.SERVER["HELLO"]
 		}
 	}
 	return c.Success("access-data:" + data)

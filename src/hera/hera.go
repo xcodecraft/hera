@@ -44,7 +44,7 @@ func New(handlers ...Handler) *hera {
 }
 
 func Classic() *hera {
-	return New(NewRecovery(), NewLogger())
+	return New(NewRecovery(), Logger)
 }
 
 func (n *hera) ServeHTTP(rw http.ResponseWriter, r *http.Request) {

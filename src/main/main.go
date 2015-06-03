@@ -2,15 +2,29 @@ package main
 
 import (
 	_ "example"
-	"fmt"
 	"hera"
+	"os"
+	"path"
 	"runtime"
 )
 
 func main() {
+	defer func() {
+		println("main exit, catch painc")
+	}()
+	initEnv()
+	startSvc()
+}
+
+func initEnv() {
+	os.Chdir(path.Dir(os.Args[0]))
+	hera.NewLogger("hera", hera.LevelDebug)
+	config := hera.NewConfig("../conf/hera.yaml")
+	hera.MakeServerVar(config)
+}
+
+func startSvc() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	fmt.Printf("hera starting...\n")
 	n := hera.Classic()
-	hera.Logger.Init("hera", hera.LevelDebug)
 	n.Run(":8083")
 }

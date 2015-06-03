@@ -1,0 +1,27 @@
+#!import "./module.yaml"
+
+__mode : "online"
+
+resuable : 
+    USER : "neoduan"
+    HELLO : "myhello"
+    PRJ_ROOT : "/home/q/system/hera"
+    LIST :
+        - "fdaf" : "fdfa"
+        - "hleo" : "df"
+        - "li2" : "dfdfd"
+
+dev :
+    DB_NAME : "hera_dev_db"
+    DB_USER : "dev"
+    DB_PWD  : "dev_pwd"
+
+demo :
+    DB_NAME : "hera_demo_db"
+    DB_USER : "demo"
+    DB_PWD  : "demo_pwd"
+
+online :
+    DB_NAME : "hera_onilne_db"
+    DB_USER : "online"
+    DB_PWD  : "online_pwd"

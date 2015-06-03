@@ -5,10 +5,9 @@ import (
 	"log/syslog"
 	"net/http"
 	"time"
-	//"strconv"
 )
 
-var Logger = &XLogger{}
+var Logger *XLogger = nil
 
 // Log levels to control the logging output.
 const (
@@ -24,15 +23,20 @@ type XLogger struct {
 	logWriter *syslog.Writer
 }
 
-func NewLogger() *XLogger {
+func NewLogger(logName string, logLevel int) *XLogger {
+	if Logger == nil {
+		Logger = &XLogger{}
+		Logger.Init(logName, LevelDebug)
+	}
 	return Logger
 }
 
 func (this *XLogger) Init(logName string, logLevel int) {
 	this.logName = logName
 	this.logLevel = logLevel
-	this.logWriter = getWriter(this.logName)
+	this.logWriter = getWriter(logName)
 }
+
 func getWriter(logName string) *syslog.Writer {
 	writer, _ := syslog.New(syslog.LOG_INFO|syslog.LOG_LOCAL6, logName)
 	return writer
