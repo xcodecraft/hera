@@ -4,7 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 
-	yaml "gopkg.in/yaml.v2"
+	"hera/yaml"
 )
 
 var SERVER = make(map[interface{}]string)
