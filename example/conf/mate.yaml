@@ -1,0 +1,40 @@
+#!import "./module.yaml"
+
+__mode : "dev"
+
+__env :
+    - "dev" 
+    - "demo"
+    - "online"
+
+__resuable : 
+    USER : "neoduan"
+    PRJ_NAME : "mate"
+    PRJ_PATH : "~/devspace/mate"
+    LOG_PATH : "/tmp/mate.log"
+    LIST :
+        - "devp1" : "yangwum"
+        - "devp2" : "zhengy"
+        - "devp3" : "neoduan"
+
+dev :
+    SVC_PORT : ":8083"
+    DB_NAME : "127.0.0.1"
+    DB_PORT : "6379"
+    DB_NO   : "1"
+    DB_USER : "dev"
+
+demo :
+    SVC_PORT : ":8083"
+    DB_NAME : "127.0.0.1"
+    DB_PORT : "6379"
+    DB_NO   : "1"
+    DB_USER : "demo"
+
+online :
+    SVC_PORT : ":80"
+    DB_NAME : "10.10.71.37"
+    DB_PORT : "49498"
+    DB_NO   : "1"
+    DB_USER : "online"
+    DB_PWD  : "4iOKWsdJop5GOQ"

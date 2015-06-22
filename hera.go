@@ -3,6 +3,7 @@ package hera
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 )
 
 type Handler interface {
@@ -43,8 +44,26 @@ func New(handlers ...Handler) *hera {
 	}
 }
 
-func Classic() *hera {
+func classic() *hera {
 	return New(NewRecovery(), Logger)
+}
+
+func Run(confPath string) {
+	fmt.Println("hera start runing")
+	initEnv(confPath)
+	startServ()
+}
+
+func initEnv(confPath string) {
+	config := NewConfig(confPath)
+	MakeServerVar(config)
+	NewLogger(SERVER["PRJ_NAME"], 1)
+}
+
+func startServ() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	n := classic()
+	n.Run(SERVER["SVC_PORT"])
 }
 
 func (n *hera) ServeHTTP(rw http.ResponseWriter, r *http.Request) {

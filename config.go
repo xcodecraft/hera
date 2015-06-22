@@ -3,20 +3,14 @@ package hera
 import (
 	"errors"
 	"io/ioutil"
-
-	"hera/yaml"
+	"github.com/xcodecraft/hera/yaml"
 )
 
 var SERVER = make(map[interface{}]string)
 
 var run_mode string
 
-var need_mode = map[string]bool{
-	"dev":    true,
-	"demo":   true,
-	"beta":   true,
-	"online": true,
-}
+var need_mode = make(map[string]bool)
 
 type Config struct {
 	confPath string
@@ -51,11 +45,20 @@ func MakeServerVar(config *Config) error {
 		return errors.New("config is empty")
 	}
 	dict := config.data
+	envDict, ok := dict["__env"];
+	if ok == false {
+		panic("conf.__env is illegal")
+	}
+
+	for _, env:= range envDict.([]interface{}){
+		need_mode[env.(string)] = true
+	}
+
 	mode, ok := dict["__mode"]
 	run_mode = mode.(string)
 
 	if ok == false || need_mode[run_mode] != true {
-		panic("mode is illega")
+		panic("conf.__mode is illegal")
 	}
 
 	CpMapValue(dict, &SERVER)

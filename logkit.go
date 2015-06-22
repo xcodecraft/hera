@@ -1,15 +1,14 @@
 package hera
 
 import (
-	"fmt"
 	"log/syslog"
 	"net/http"
 	"time"
+	"fmt"
 )
 
 var Logger *XLogger = nil
 
-// Log levels to control the logging output.
 const (
 	LevelDebug = iota
 	LevelInfo
@@ -23,18 +22,17 @@ type XLogger struct {
 	logWriter *syslog.Writer
 }
 
+func (this *XLogger) Init(logName string, logLevel int) {
+	this.logName = logName
+	this.logLevel = logLevel
+	this.logWriter = getWriter(this.logName)
+}
 func NewLogger(logName string, logLevel int) *XLogger {
 	if Logger == nil {
 		Logger = &XLogger{}
 		Logger.Init(logName, LevelDebug)
 	}
 	return Logger
-}
-
-func (this *XLogger) Init(logName string, logLevel int) {
-	this.logName = logName
-	this.logLevel = logLevel
-	this.logWriter = getWriter(logName)
 }
 
 func getWriter(logName string) *syslog.Writer {
@@ -81,4 +79,5 @@ func (this *XLogger) ServeHTTP(rw http.ResponseWriter, r *http.Request, next htt
 
 	res := rw.(ResponseWriter)
 	this.Info(fmt.Sprintf("Completed %v %s in %v", res.Status(), http.StatusText(res.Status()), time.Since(start)))
+
 }
