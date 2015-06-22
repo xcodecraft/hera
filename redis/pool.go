@@ -24,8 +24,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
-
-	"github.com/garyburd/redigo/internal"
+	"github.com/xcodecraft/hera/redis/internal"
 )
 
 var nowFunc = time.Now // for testing
