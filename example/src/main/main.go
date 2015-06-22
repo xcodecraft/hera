@@ -10,5 +10,5 @@ import (
 
 func main() {
 	curentDir, _ := os.Getwd()
-	hera.Run(fmt.Sprintf("%s/../conf/mate.yaml",curentDir)
+	hera.Run(fmt.Sprintf("%s/conf/conf.yaml",curentDir))
 }
