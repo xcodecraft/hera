@@ -1,0 +1,11 @@
+<runner>
+    program nohup ./bin/main &
+    backoff-limit   10
+    daemon          True
+    forever         True
+    exit-codes      0,2
+    umask           022
+    directory       .
+    default-to-interactive True
+    hang-around     False
+</runner>
