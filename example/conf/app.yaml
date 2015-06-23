@@ -3,15 +3,15 @@
 __mode : "dev"
 
 __env :
-    - "dev" 
+    - "dev"
     - "demo"
     - "online"
 
-__resuable : 
+__resuable :
     USER : "neoduan"
-    PRJ_NAME : "mate"
-    PRJ_PATH : "~/devspace/mate"
-    LOG_PATH : "/tmp/mate.log"
+    PRJ_NAME : "hera_example"
+    PRJ_PATH : "~/devspace/hera_example"
+    LOG_PATH : "/tmp/hera_example.log"
     LIST :
         - "devp1" : "yangwum"
         - "devp2" : "zhengy"
