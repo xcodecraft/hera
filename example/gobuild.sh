@@ -6,7 +6,15 @@ PRJ='hera_example'
 export GOPATH=$ROOT_DIR
 export GOBIN=$ROOT_DIR/bin
 
+if [ $1 = "clean" ]; then
+   echo "clean..."
+   rm -rf ./pkg ./bin ./src/github.com/
+   echo "clean finish"
+   exit
+fi
+
 echo "**********************************Strat****************************"
+
 echo "Init env..."
 echo "GOPATH is :$GOPATH"
 echo "GOBIN  is :$GOBIN"
