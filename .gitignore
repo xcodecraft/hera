@@ -1,4 +1,4 @@
-example/bin/*
-example/pkg/*
-example/src/github.com/
+demo/bin/*
+demo/pkg/*
+demo/src/github.com/
 *.swp

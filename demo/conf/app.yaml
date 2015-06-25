@@ -9,9 +9,9 @@ __env :
 
 __resuable :
     USER : "neoduan"
-    PRJ_NAME : "hera_example"
-    PRJ_PATH : "~/devspace/hera_example"
-    LOG_PATH : "/tmp/hera_example.log"
+    PRJ_NAME : "hera_demo"
+    PRJ_PATH : "~/devspace/hera_demo"
+    LOG_PATH : "/tmp/hera_demo.log"
     LIST :
         - "devp1" : "yangwum"
         - "devp2" : "zhengy"

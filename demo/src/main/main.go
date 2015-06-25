@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "api"
 	_ "api1"
 	_ "api2"
 	"fmt"
