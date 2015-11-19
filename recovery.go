@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+	"strings"
 )
 
 type Recovery struct {
@@ -14,9 +15,10 @@ type Recovery struct {
 
 func NewRecovery() *Recovery {
 	return &Recovery{
+		//上线关掉此开关
 		PrintStack: true,
 		StackAll:   false,
-		StackSize:  1024 * 8,
+		StackSize:  1024 * 80,
 	}
 }
 
@@ -25,14 +27,16 @@ func (rec *Recovery) ServeHTTP(rw http.ResponseWriter, r *http.Request, next htt
 		if err := recover(); err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			stack := make([]byte, rec.StackSize)
-			stack = stack[:runtime.Stack(stack, rec.StackAll)]
 
-			f := "PANIC: %s\n%s"
-			Logger.Info(fmt.Sprintf(f, err, stack))
+			stackStr := string(stack[:runtime.Stack(stack, rec.StackAll)])
+
+			f := "hera  catch panic: %s , %s"
 
 			if rec.PrintStack {
-				fmt.Fprintf(rw, f, err, stack)
+				fmt.Fprintf(rw, f, err, stackStr)
 			}
+			stackStr = strings.Replace(stackStr, "\n", "\t", -1)
+			Logger.Error(fmt.Sprintf(f, err, stackStr))
 		}
 	}()
 

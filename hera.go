@@ -3,6 +3,7 @@ package hera
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"runtime"
 )
 
@@ -40,30 +41,37 @@ type hera struct {
 func New(handlers ...Handler) *hera {
 	return &hera{
 		handlers:   handlers,
-		middleware: build(handlers),
-	}
+		middleware: build(handlers)}
 }
 
 func classic() *hera {
 	return New(NewRecovery(), Logger)
 }
 
-func Run(confPath string) {
-	fmt.Println("hera start runing")
-	initEnv(confPath)
-	startServ()
+//func Run(confPath string) {
+func Run(port string) {
+	//InitEnv(confPath)
+	startServ(port)
 }
 
-func initEnv(confPath string) {
-	config := NewConfig(confPath)
-	MakeServerVar(config)
-	NewLogger(SERVER["PRJ_NAME"], 1)
+//加载环境变量和日志级别
+func InitEnv(confPath string) {
+	if _, err := os.Stat(confPath); err != nil {
+		panic("hera conf file is not exist")
+	}
+	NewEnv(confPath)
+	logLevel := ENV["LOGLEVEL"]
+	if _, ok := LoggerLevel[logLevel]; !ok {
+		panic("hera log level is wrong")
+	}
+	fmt.Println("log level : " + logLevel)
+	NewLogger(ENV["PRJ_NAME"], LoggerLevel[logLevel])
 }
 
-func startServ() {
+func startServ(port string) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	n := classic()
-	n.Run(SERVER["SVC_PORT"])
+	n.Run(port)
 }
 
 func (n *hera) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
@@ -89,7 +97,10 @@ func (n *hera) UseHandlerFunc(handlerFunc func(rw http.ResponseWriter, r *http.R
 func (n *hera) Run(addr string) {
 	n.UseHandler(NewRouter())
 	Logger.Info(fmt.Sprintf("listening on %v", addr))
-	http.ListenAndServe(addr, n)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", addr), n); err != nil {
+		Logger.Error(fmt.Sprintf("server start fail: %s", err))
+		panic(fmt.Sprintf("server start fail: %s", err))
+	}
 }
 
 func (n *hera) Handlers() []Handler {

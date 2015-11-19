@@ -1,10 +1,10 @@
 package hera
 
 import (
+	"fmt"
 	"log/syslog"
 	"net/http"
 	"time"
-	"fmt"
 )
 
 var Logger *XLogger = nil
@@ -15,6 +15,13 @@ const (
 	LevelWarn
 	LevelError
 )
+
+var LoggerLevel = map[string]int{
+	"debug": LevelDebug,
+	"info":  LevelInfo,
+	"warn":  LevelWarn,
+	"error": LevelError,
+}
 
 type XLogger struct {
 	logName   string
@@ -30,7 +37,7 @@ func (this *XLogger) Init(logName string, logLevel int) {
 func NewLogger(logName string, logLevel int) *XLogger {
 	if Logger == nil {
 		Logger = &XLogger{}
-		Logger.Init(logName, LevelDebug)
+		Logger.Init(logName, logLevel)
 	}
 	return Logger
 }

@@ -2,8 +2,8 @@ package hera
 
 import (
 	"fmt"
-	"time"
 	"github.com/xcodecraft/hera/redis"
+	"time"
 )
 
 type RedisSvc struct {
@@ -11,30 +11,40 @@ type RedisSvc struct {
 	ip       string
 	port     string
 	db       string
+	pwd      string
+	pool     *redis.Pool
 }
 
-var Redis *RedisSvc = nil
-var redisConnection *redis.Pool = nil
-
-func NewRedisSvc() {
-	Redis = &RedisSvc{
-		connType: "tcp",
-		ip:       SERVER["DB_NAME"],
-		port:     SERVER["DB_PORT"],
-		db:       SERVER["DB_NO"],
-	}
-}
-
-func (this *RedisSvc) getRedisPool() redis.Conn {
-	if redisConnection == nil {
-		redisConnection = &redis.Pool{
-			MaxIdle:     1000,
+func NewRedis(dbIp, dbPort, dbNo, dbPwd string, enablePool bool) *RedisSvc {
+	var dbPool *redis.Pool = nil
+	if enablePool {
+		dbPool = &redis.Pool{
+			MaxIdle:     80,
+			MaxActive:   1000,
 			IdleTimeout: 240 * time.Second,
+			Wait:        true,
 			Dial: func() (redis.Conn, error) {
-				c, err := redis.Dial("tcp", fmt.Sprintf("%s:%s", this.ip, this.port))
+				c, err := redis.Dial("tcp", fmt.Sprintf("%s:%s", dbIp, dbPort))
 				if err != nil {
 					return nil, err
 				}
+
+				if dbPwd != "" {
+					_, err = c.Do("AUTH", dbPwd)
+					if err != nil {
+						c.Close()
+						return nil, err
+					}
+				}
+
+				if dbNo != "" {
+					_, err = c.Do("SELECT", dbNo)
+					if err != nil {
+						c.Close()
+						return nil, err
+					}
+				}
+
 				return c, err
 			},
 			TestOnBorrow: func(c redis.Conn, t time.Time) error {
@@ -42,9 +52,22 @@ func (this *RedisSvc) getRedisPool() redis.Conn {
 				return err
 			},
 		}
-
 	}
-	return redisConnection.Get()
+	return &RedisSvc{
+		connType: "tcp",
+		ip:       dbIp,
+		port:     dbPort,
+		db:       dbNo,
+		pwd:      dbPwd,
+		pool:     dbPool,
+	}
+}
+
+func (this *RedisSvc) getRedisPool() redis.Conn {
+	if this.pool != nil {
+		return this.pool.Get()
+	}
+	return nil
 }
 
 func String(reply interface{}, err error) (string, error) {
@@ -55,34 +78,28 @@ func Strings(reply interface{}, err error) ([]string, error) {
 	return redis.Strings(reply, err)
 }
 
+func (this *RedisSvc) ActiveCount() int {
+	if this.pool != nil {
+		return this.pool.ActiveCount()
+	}
+	return 0
+}
+
 func (this *RedisSvc) DoCmd(cmd string, args ...interface{}) (interface{}, error) {
-	enablePool := true
 	var c redis.Conn
 	var err error
-	if enablePool {
-
+	if this.pool != nil {
 		c = this.getRedisPool()
-
-		if SERVER["DB_PWD"] != "" {
-			_, err = c.Do("AUTH", SERVER["DB_PWD"])
-			if err != nil {
-				panic(err)
-			}
-		}
 	} else {
 		c, err = redis.Dial(this.connType, fmt.Sprintf("%s:%s", this.ip, this.port))
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 	defer c.Close()
-	_, err = c.Do("SELECT", this.db)
-	if err != nil {
-		panic(err)
-	}
 	re, err := c.Do(cmd, args...)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	return re, err
 }
