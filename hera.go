@@ -62,10 +62,10 @@ func InitEnv(confPath string) {
 	NewEnv(confPath)
 	logLevel := ENV["LOGLEVEL"]
 	if _, ok := LoggerLevel[logLevel]; !ok {
-		panic("hera log level is wrong")
+		panic("hera loglevel is wrong")
 	}
-	fmt.Println("log level : " + logLevel)
-	NewLogger(ENV["PRJ_NAME"], LoggerLevel[logLevel])
+	fmt.Println("prjname :" + ENV["PRJ_NAME"] + "  log level : " + logLevel)
+	LogKit.Init(ENV["PRJ_NAME"], LoggerLevel[logLevel])
 }
 
 func startServ(port string) {

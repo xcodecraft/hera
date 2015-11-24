@@ -5,7 +5,6 @@ import (
 	// "log"
 	"net/http"
 	"reflect"
-	"runtime"
 	"strings"
 )
 
@@ -25,7 +24,7 @@ func (this *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("ContentType", "application/json")
 				w.WriteHeader(200)
 				w.Write(rv.Json())
-				runtime.Goexit()
+				return
 			}
 			panic(err)
 		}

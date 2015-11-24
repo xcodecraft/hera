@@ -16,7 +16,7 @@ type Recovery struct {
 func NewRecovery() *Recovery {
 	return &Recovery{
 		//上线关掉此开关
-		PrintStack: true,
+		PrintStack: false,
 		StackAll:   false,
 		StackSize:  1024 * 80,
 	}
